@@ -1,6 +1,6 @@
 # Railway Template Publisher Setup
 
-This repository contains the runtime pieces. The actual template prompts, descriptions, generated secrets, attached volume, and networking mode are configured in Railway's template composer.
+This repository contains the runtime pieces. The actual template prompts, descriptions, generated secrets, attached volume resource, backup schedules, and networking mode are configured in Railway's template composer and deployed service settings.
 
 ## Recommended Service Settings
 
@@ -13,6 +13,21 @@ Use a single service named `Neo4j` and point it at this repository.
 - TCP Proxy: optional on internal port `7687`
 - Volume mount path: `/data`
 - Healthcheck path: `/`
+
+## Volume And Backup Model
+
+For this template, the Neo4j storage should be a separate Railway volume resource attached to the `Neo4j` service.
+
+- Add the volume in the Railway template composer by attaching it to the service.
+- Mount it at `/data`.
+- Do not expect `railway.toml` or Docker files in this repo to create the volume automatically.
+- If you deploy the raw GitHub repo directly instead of the published template, attach the volume manually.
+
+Backups are then managed on that attached volume:
+
+- Use the deployed service's volume backup controls for manual backups.
+- Configure daily, weekly, or monthly backup schedules there.
+- Do not create a second volume just for backups; Railway backups are taken from the attached service volume.
 
 ## Recommended Template Variables
 
@@ -47,6 +62,16 @@ If you also enable a TCP proxy for external drivers:
 | Variable | Suggested value | Notes |
 | --- | --- | --- |
 | `NEO4J_PUBLIC_BOLT_URI` | `neo4j://${{Neo4j.RAILWAY_TCP_PROXY_DOMAIN}}:${{Neo4j.RAILWAY_TCP_PROXY_PORT}}` | External Bolt entrypoint. |
+
+## Publish-Test Checklist
+
+Before announcing the template publicly:
+
+1. Publish the template from Railway's template composer.
+2. Deploy the published template URL into a fresh project.
+3. Confirm the `Neo4j` service has a separate attached volume resource mounted at `/data`.
+4. Open the volume backup UI and verify backup scheduling is available.
+5. Confirm HTTP Browser access works and Bolt behaves as expected for private-only or TCP-proxied access.
 
 ## Recommended User-Facing Descriptions
 

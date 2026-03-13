@@ -1,3 +1,6 @@
+[![Deploy on Railway](https://railway.com/button.svg)](https://railway.com/deploy/2sIwHG?referralCode=s17tif&utm_medium=integration&utm_source=template&utm_campaign=generic)
+
+
 # Deploy and Host Neo4j with Railway
 
 This repository is a single-node Neo4j template designed for Railway. It pins the upstream Neo4j container by default, lets template users override that version before launch, derives a secure `NEO4J_AUTH` from a generated password, and adapts the official image to Railway's single-volume and dynamic-port conventions.
@@ -12,11 +15,12 @@ This repository is a single-node Neo4j template designed for Railway. It pins th
 
 ## Quick Start
 
-1. Create a Railway template from this GitHub repository.
-2. Attach a volume to the Neo4j service at `/data`.
+1. Create and publish a Railway template from this GitHub repository.
+2. In the Railway template composer, attach a separate volume resource to the `Neo4j` service at `/data`.
 3. Enable HTTP public networking for the Browser UI.
 4. Optionally add a TCP Proxy on internal port `7687` if you want external Bolt access.
 5. Define the recommended template variables from [docs/publisher-setup.md](/root/gb-neo4j-railway-template/docs/publisher-setup.md).
+6. Test by deploying the published template, not by deploying the raw GitHub repo directly.
 
 ## Recommended Variables
 
@@ -68,6 +72,13 @@ Railway supports one attached volume per service, so the wrapper consolidates th
 - Neo4j imports are redirected to `/data/import`.
 
 That means one Railway volume at `/data` preserves the database, plugin cache, import staging files, and logs.
+
+Important:
+
+- The attached volume is a separate Railway resource created in the Railway template composer.
+- It is not declared by `railway.toml` or any other file in this repo.
+- If someone deploys the raw GitHub repo instead of the published template, they must attach the volume manually.
+- Railway backups and backup schedules are managed from the attached volume on the deployed service, not from a second backup volume.
 
 ## Networking Model
 

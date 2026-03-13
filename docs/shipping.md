@@ -24,11 +24,17 @@ At minimum:
 
 1. Create a new template from the GitHub repository.
 2. Use a single service named `Neo4j`.
-3. Attach one volume at `/data`.
+3. Attach one separate volume resource to the `Neo4j` service at `/data`.
 4. Enable HTTP public networking.
 5. Optionally enable a TCP Proxy on `7687` for external Bolt.
 6. Add the recommended variables and descriptions.
 7. Use [assets/neo4j-railway-template-icon.svg](/root/gb-neo4j-railway-template/assets/neo4j-railway-template-icon.svg) for the template icon if you do not have a branded replacement.
+
+Important notes:
+
+- The attached volume is created in Railway's template composer, not from this repo.
+- A direct deploy from the GitHub repo will not automatically create that volume.
+- Backup schedules are managed on the attached volume after deployment.
 
 ## Recommended Published Defaults
 
@@ -57,4 +63,4 @@ After Railway assigns the template code:
 2. Add the live template URL to the README and repo description if useful.
 3. Cut a tagged release if you want a visible source milestone.
 4. Keep the root branch stable, because Railway update notifications are triggered from root-branch changes on GitHub-backed templates.
-
+5. Re-test the published template in a fresh project and verify the attached volume and backup scheduling UI are present.
